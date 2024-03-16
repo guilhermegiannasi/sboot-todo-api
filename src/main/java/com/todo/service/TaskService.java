@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -17,8 +18,15 @@ public class TaskService {
     public List<Task> findAll(){
         return repository.findAll();
     }
-    public Task findById(Long id){
-        return repository.findById(id).orElse(null);
+    public Task update(Long id, Task taskDetails){
+        Task task = repository.findById(id).orElseThrow(() -> new NoSuchElementException("Task not found with id " + id));
+
+        task.setDescription(taskDetails.getDescription());
+        task.setConcluded(taskDetails.getConcluded());
+        task.setValidity(taskDetails.getValidity());
+        task.setDeleted(taskDetails.getDeleted());
+
+        return repository.save(task);
     }
     public Task save(Task task){
         return repository.save(task);
